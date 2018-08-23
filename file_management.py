@@ -2,9 +2,13 @@ import person_database
 
 
 class FileManagement:
+
+    def __init__(self, filename) -> None:
+        self.filename = filename
+
     # read file
-    def read_person_file(self, filename):
-        with open(filename, 'r', newline='') as filereader:
+    def read_person_file(self):
+        with open(self.filename, 'r', newline='') as filereader:
             header = filereader.readline()
             person_list = []
             for row in filereader:
@@ -15,8 +19,8 @@ class FileManagement:
             return person_list
 
     # write file
-    def write_person_file(self, filename, person_list):
-        with open(filename, 'w') as filewriter:
+    def write_person_file(self, person_list):
+        with open(self.filename, 'w') as filewriter:
             if person_list:
                 filewriter.write('nickname,gender,name \n')
                 for person in person_list:
@@ -32,12 +36,12 @@ class TestFileManagement(unittest.TestCase):
 
     def test_read_empty_file_returns_empty_list(self):
         file_management = FileManagement()
-        person_list = file_management.read_person_file("test_file/empty_file.csv")
+        person_list = file_management.read_person_file()
         self.assertEqual([], person_list)
 
     def test_read_person_file_returns_person_list(self):
         file_management = FileManagement()
-        person_list = file_management.read_person_file("test_file/two_person_file.csv")
+        person_list = file_management.read_person_file()
         self.assertEqual(
             [
                 person_database.Person("oba", "male", "Obama"),
@@ -48,14 +52,14 @@ class TestFileManagement(unittest.TestCase):
 
     def test_write_empty_person_file(self):
         file_management = FileManagement()
-        file_management.write_person_file("test_file/write_empty_file.csv", [])
-        person_list = file_management.read_person_file("test_file/write_empty_file.csv")
+        file_management.write_person_file([])
+        person_list = file_management.read_person_file()
         self.assertEqual([], person_list)
 
     def test_write_person_file(self):
         file_management = FileManagement()
         write_person = [person_database.Person("oba", "male", "Obama"),
                         person_database.Person("twins", "female", "Twins")]
-        file_management.write_person_file("test_file/write_person_file.csv", write_person)
-        person_list = file_management.read_person_file("test_file/write_person_file.csv")
+        file_management.write_person_file(write_person)
+        person_list = file_management.read_person_file()
         self.assertEqual(write_person, person_list)

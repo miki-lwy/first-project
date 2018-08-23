@@ -8,14 +8,11 @@ db = person_database.PersonDatabase()
 
 
 # initialization
-with open('example_file.csv', 'r', newline='') as filereader:
-    header = filereader.readline()
-    for row in filereader:
-        row = row.strip()
-        row_list = row.split(',')
-        new_person = person_database.Person(row_list[0], row_list[1], row_list[2])
-        db.create(new_person)
 
+file_manager = file_management.FileManagement('example_file.csv')
+person_list = file_manager.read_person_file()
+for person in person_list:
+    db.create(person)
 
 
 class MyHandlerForHTTP(http.server.BaseHTTPRequestHandler):
@@ -32,10 +29,7 @@ class MyHandlerForHTTP(http.server.BaseHTTPRequestHandler):
             person_dict[parsed_element[0]] = parsed_element[1]
         new_person = person_database.Person(person_dict['nickname'], person_dict['gender'], person_dict['name'])
         db.create(new_person)
-        with open('example_file.csv', 'w') as filewriter:
-            filewriter.write('nickname,gender,name \n')
-            for person in db.list:
-                filewriter.write(person.nickname + ',' + person.gender + ',' + person.name + '\n')
+        file_manager.write_person_file(db.list)
 
     def do_PUT(self):
         self.send_response(200)
@@ -46,11 +40,7 @@ class MyHandlerForHTTP(http.server.BaseHTTPRequestHandler):
         json_body = json.loads(put_body)
         amend_person = person_database.Person(json_body['nickname'], json_body['gender'], json_body['name'])
         db.update(amend_person)
-        with open('example_file.csv', 'w') as filewriter:
-            filewriter.write('nickname,gender,name \n')
-            for person in db.list:
-                filewriter.write(person.nickname + ',' + person.gender + ',' + person.name + '\n')
-
+        file_manager.write_person_file(db.list)
 
     def extract_nickname(self):
         return self.path.replace('/friends/', '')
@@ -61,10 +51,7 @@ class MyHandlerForHTTP(http.server.BaseHTTPRequestHandler):
         self.end_headers()
         nickname_to_find = self.extract_nickname()
         db.delete(nickname_to_find)
-        with open('example_file.csv', 'w') as filewriter:
-            filewriter.write('nickname,gender,name \n')
-            for person in db.list:
-                filewriter.write(person.nickname + ',' + person.gender + ',' + person.name + '\n')
+        file_manager.write_person_file(db.list)
 
 
     def do_GET(self):
@@ -86,10 +73,11 @@ class MyHandlerForHTTP(http.server.BaseHTTPRequestHandler):
                 self.wfile.write(bytes('<tr>'
                                        '<td>'
                                        '<a href="http://localhost:8088/friends/' + person.nickname + '">' + person.nickname + '</a>'
-                                       '</td> '
-                                       '<td>' + person.name + '</td>'
-                                       '<td>' + person.gender + '</td>'
-                                       '</tr>', 'UTF-8'))
+                                                                                                                              '</td> '
+                                                                                                                              '<td>' + person.name + '</td>'
+                                                                                                                                                     '<td>' + person.gender + '</td>'
+                                                                                                                                                                              '</tr>',
+                                       'UTF-8'))
 
             self.wfile.write(bytes('</table>', 'UTF-8'))
             self.wfile.write(bytes('<form  action="/friends" method="post">', 'UTF-8'))
@@ -101,7 +89,6 @@ class MyHandlerForHTTP(http.server.BaseHTTPRequestHandler):
             self.wfile.write(bytes('<input type="text" name="gender" value="">', 'UTF-8'))
             self.wfile.write(bytes('<input type="submit" value="Submit">', 'UTF-8'))
             self.wfile.write(bytes('</form>', 'UTF-8'))
-
 
         if self.path.startswith('/friends/'):
             nickname_to_find = self.extract_nickname()
