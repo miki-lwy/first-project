@@ -25,12 +25,23 @@ class PersonDatabase:
 
 
 class Person:
+    def __eq__(self, o: object) -> bool:
+        if isinstance(o, Person):
+            return self.nickname == o.nickname and self.name == o.name and self.gender == o.gender
+        return NotImplemented
+
     def __init__(self, nickname, gender, name):
         self.nickname = nickname
         self.gender = gender
         self.name = name
 
+    def __repr__(self):
+        return self.nickname + " " + self.name + " " + self.gender
+
+
+
 import unittest
+
 
 class TestPersonDatabase(unittest.TestCase):
 
@@ -41,7 +52,7 @@ class TestPersonDatabase(unittest.TestCase):
 
     def test_find_with_existing_person_returns_person(self):
         database = PersonDatabase()
-        person = Person("miki","female","leung wing yan")
+        person = Person("miki", "female", "leung wing yan")
         database.create(person)
         find_person = database.find("miki")
         self.assertEqual(person, find_person)
@@ -77,14 +88,9 @@ class TestPersonDatabase(unittest.TestCase):
         find_person = database.find("miki")
         self.assertEqual(updated_person, find_person)
 
-
     def test_update_non_existing_person_create_person(self):
         database = PersonDatabase()
         updated_person = Person("miki", "male", "leung wing yan")
         database.update(updated_person)
         find_person = database.find("miki")
         self.assertEqual(updated_person, find_person)
-
-
-
-
