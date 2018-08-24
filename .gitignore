@@ -3,3 +3,4 @@ book.py
 example_file_reference.csv
 venv
 __pycache__
+.DS_Store

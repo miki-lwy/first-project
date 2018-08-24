@@ -3,6 +3,8 @@ import json
 import urllib.request
 import person_database
 import file_management
+import html_renderer
+
 
 db = person_database.PersonDatabase()
 
@@ -92,11 +94,8 @@ class MyHandlerForHTTP(http.server.BaseHTTPRequestHandler):
 
         if self.path.startswith('/friends/'):
             nickname_to_find = self.extract_nickname()
-            person = db.find(nickname_to_find)
-            if person is not None:
-                self.wfile.write(bytes('<h1> ' + person.nickname + '\'s details: </h1>', 'UTF-8'))
-                self.wfile.write(bytes('<dl><dt>Gender: </dt> <dd>' + person.gender + '</dd>', 'UTF-8'))
-                self.wfile.write(bytes('<dt>Name: </dt> <dd>' + person.name + '</dd></dl>', 'UTF-8'))
+            if db.find(nickname_to_find) is not None:
+                html_renderer.render_person_details(self.wfile, db.find(nickname_to_find))
             else:
                 self.wfile.write(bytes('<p> I don\'t know this person </p>', 'UTF-8'))
 
