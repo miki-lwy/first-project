@@ -1,0 +1,17 @@
+<h1> Here are your friends: </h1>
+<table style="width:100%">
+<tr> <th>Nickname</th> <th>Name</th> <th>Gender</th></tr>
+% for person in person_list:
+<tr>
+<td>
+<a href="/friends/${person.nickname}">${person.nickname}</a>
+</td>
+<td>
+${person.name}
+</td>
+<td>
+${person.gender}
+</td>
+</tr>
+% endfor
+</table>

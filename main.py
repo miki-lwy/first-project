@@ -68,20 +68,7 @@ class MyHandlerForHTTP(http.server.BaseHTTPRequestHandler):
         </style></head><body>', 'UTF-8'))
 
         if self.path == '/friends':
-            self.wfile.write(bytes('<h1> Here are your friends: </h1>', 'UTF-8'))
-            self.wfile.write(bytes('<table style="width:100%">', 'UTF-8'))
-            self.wfile.write(bytes('<tr> <th>Nickname</th> <th>Name</th> <th>Gender</th></tr>', 'UTF-8'))
-            for person in db.list:
-                self.wfile.write(bytes('<tr>'
-                                       '<td>'
-                                       '<a href="http://localhost:8088/friends/' + person.nickname + '">' + person.nickname + '</a>'
-                                                                                                                              '</td> '
-                                                                                                                              '<td>' + person.name + '</td>'
-                                                                                                                                                     '<td>' + person.gender + '</td>'
-                                                                                                                                                                              '</tr>',
-                                       'UTF-8'))
-
-            self.wfile.write(bytes('</table>', 'UTF-8'))
+            html_renderer.render_person_table(self.wfile, db.list)
             html_renderer.render_person_form(self.wfile)
 
         if self.path.startswith('/friends/'):

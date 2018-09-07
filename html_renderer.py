@@ -13,6 +13,13 @@ def render_person_form(writer):
     form_output = my_template.render()
     writer.write(bytes(form_output, 'UTF-8'))
 
+def render_person_table(writer, person_list):
+    my_template = Template(filename="template/person_table.txt")
+    person_table_output = my_template.render(person_list=person_list)
+    writer.write(bytes(person_table_output, 'UTF-8'))
+
+
+
 
 import unittest
 
