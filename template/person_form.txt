@@ -1,0 +1,9 @@
+<form  action="/friends" method="post">
+<p> Nickname </p>
+<input type="text" name="nickname" value="">
+<p> Name </p>
+<input type="text" name="name" value="">
+<p> Gender</p>
+<input type="text" name="gender" value="">
+<input type="submit" value="Submit">
+</form>

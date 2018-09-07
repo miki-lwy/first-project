@@ -82,15 +82,7 @@ class MyHandlerForHTTP(http.server.BaseHTTPRequestHandler):
                                        'UTF-8'))
 
             self.wfile.write(bytes('</table>', 'UTF-8'))
-            self.wfile.write(bytes('<form  action="/friends" method="post">', 'UTF-8'))
-            self.wfile.write(bytes('<p> Nickname </p>', 'UTF-8'))
-            self.wfile.write(bytes('<input type="text" name="nickname" value="">', 'UTF-8'))
-            self.wfile.write(bytes('<p> Name </p>', 'UTF-8'))
-            self.wfile.write(bytes('<input type="text" name="name" value="">', 'UTF-8'))
-            self.wfile.write(bytes('<p> Gender</p>', 'UTF-8'))
-            self.wfile.write(bytes('<input type="text" name="gender" value="">', 'UTF-8'))
-            self.wfile.write(bytes('<input type="submit" value="Submit">', 'UTF-8'))
-            self.wfile.write(bytes('</form>', 'UTF-8'))
+            html_renderer.render_person_form(self.wfile)
 
         if self.path.startswith('/friends/'):
             nickname_to_find = self.extract_nickname()
